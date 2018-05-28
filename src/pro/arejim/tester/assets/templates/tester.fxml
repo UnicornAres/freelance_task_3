@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="420.0"
+            style="-fx-background-radius: 15;" xmlns="http://javafx.com/javafx/9.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="pro.arejim.tester.gui.controllers.Controller">
+    <top>
+        <HBox alignment="CENTER_RIGHT" style="-fx-background-radius: 15 15 0 0;" BorderPane.alignment="CENTER">
+            <children>
+                <Button fx:id="hideBtn" focusTraversable="false" mnemonicParsing="false" prefHeight="25.0"
+                        prefWidth="40.0" style="-fx-background-color: #999999; -fx-background-radius: 0 0 0 15;"
+                        text="_" textFill="WHITE">
+                    <font>
+                        <Font name="Arial Black" size="12.0"/>
+                    </font>
+                </Button>
+                <Button fx:id="exitBtn" focusTraversable="false" mnemonicParsing="false" prefHeight="25.0"
+                        prefWidth="40.0" style="-fx-background-color: #ff4455; -fx-background-radius: 0 15 0 0;"
+                        text="X" textFill="WHITE">
+                    <font>
+                        <Font name="Arial Black" size="12.0"/>
+                    </font>
+                </Button>
+            </children>
+        </HBox>
+    </top>
+    <center>
+        <StackPane prefWidth="420.0" BorderPane.alignment="CENTER">
+            <children>
+                <VBox fx:id="processingPane" alignment="CENTER" visible="false">
+                    <children>
+                        <HBox alignment="TOP_CENTER">
+                            <children>
+                                <Label text="Число: " textFill="#555555">
+                                    <font>
+                                        <Font name="Arial Black" size="16.0"/>
+                                    </font>
+                                </Label>
+                                <ScrollPane maxWidth="250.0" style="-fx-background-color: transparent;"
+                                            vbarPolicy="NEVER">
+                                    <content>
+                                        <Label fx:id="numberLbl" textFill="#555555">
+                                            <font>
+                                                <Font name="Arial Black" size="16.0"/>
+                                            </font>
+                                        </Label>
+                                    </content>
+                                </ScrollPane>
+                            </children>
+                            <VBox.margin>
+                                <Insets top="10.0"/>
+                            </VBox.margin>
+                        </HBox>
+                        <HBox alignment="CENTER">
+                            <children>
+                                <Label text="Длинна числа: " textFill="#666666">
+                                    <font>
+                                        <Font name="Arial Black" size="16.0"/>
+                                    </font>
+                                </Label>
+                                <Label fx:id="lengthLbl2" textFill="#666666">
+                                    <font>
+                                        <Font name="Arial Black" size="16.0"/>
+                                    </font>
+                                </Label>
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER">
+                            <children>
+                                <Label text="Времени прошло: " textFill="#666666">
+                                    <font>
+                                        <Font name="Arial Black" size="16.0"/>
+                                    </font>
+                                </Label>
+                                <Label fx:id="elapsedTimeLbl" text="0 мс." textFill="#666666">
+                                    <font>
+                                        <Font name="Arial Black" size="16.0"/>
+                                    </font>
+                                </Label>
+                            </children>
+                        </HBox>
+                        <StackPane VBox.vgrow="NEVER">
+                            <VBox.margin>
+                                <Insets top="15.0"/>
+                            </VBox.margin>
+                            <children>
+                                <ProgressIndicator fx:id="progressIndicator" prefHeight="33.0" prefWidth="420.0"/>
+                                <Label fx:id="statusLbl" textFill="#555555">
+                                    <font>
+                                        <Font name="Arial Black" size="15.0"/>
+                                    </font>
+                                </Label>
+                            </children>
+                        </StackPane>
+                    </children>
+                </VBox>
+                <VBox fx:id="firstMethodPane" alignment="CENTER" visible="false">
+                    <children>
+                        <FlowPane alignment="CENTER">
+                            <children>
+                                <Label text="M" textFill="#444444">
+                                    <font>
+                                        <Font name="Arial Black" size="50.0"/>
+                                    </font>
+                                </Label>
+                                <TextField fx:id="pFld" prefHeight="33.0" prefWidth="100.0" promptText="P"
+                                           style="-fx-background-color: #eeeeee; -fx-background-radius: 5; -fx-border-color: #555555; -fx-border-radius: 5; -fx-text-fill: #444444;">
+                                    <font>
+                                        <Font name="Arial Black" size="20.0"/>
+                                    </font>
+                                    <FlowPane.margin>
+                                        <Insets top="25.0"/>
+                                    </FlowPane.margin>
+                                    <padding>
+                                        <Insets bottom="-1.0" left="-1.0" right="-1.0" top="-1.0"/>
+                                    </padding>
+                                </TextField>
+                                <Label text="=2" textFill="#444444">
+                                    <font>
+                                        <Font name="Arial Black" size="50.0"/>
+                                    </font>
+                                </Label>
+                                <Label fx:id="pLbl1" maxWidth="120.0" text="P" textFill="#444444">
+                                    <FlowPane.margin>
+                                        <Insets bottom="30.0"/>
+                                    </FlowPane.margin>
+                                    <font>
+                                        <Font name="Arial Black" size="22.0"/>
+                                    </font>
+                                </Label>
+                                <Label text="-1" textFill="#444444">
+                                    <font>
+                                        <Font name="Arial Black" size="50.0"/>
+                                    </font>
+                                </Label>
+                            </children>
+                        </FlowPane>
+                        <HBox fx:id="mPane" alignment="CENTER" visible="false">
+                            <children>
+                                <Label text="M" textFill="#555555">
+                                    <font>
+                                        <Font name="Arial Black" size="16.0"/>
+                                    </font>
+                                </Label>
+                                <Label fx:id="pLbl2" maxWidth="75.0" text="p" textFill="#555555">
+                                    <font>
+                                        <Font name="Arial Black" size="14.0"/>
+                                    </font>
+                                    <HBox.margin>
+                                        <Insets top="10.0"/>
+                                    </HBox.margin>
+                                </Label>
+                                <Label text="=" textFill="#555555">
+                                    <font>
+                                        <Font name="Arial Black" size="16.0"/>
+                                    </font>
+                                </Label>
+                                <ScrollPane fitToHeight="true" maxWidth="250.0"
+                                            style="-fx-background-color: transparent;" vbarPolicy="NEVER">
+                                    <content>
+                                        <Label fx:id="mLbl" textFill="#555555">
+                                            <font>
+                                                <Font name="Arial Black" size="16.0"/>
+                                            </font>
+                                        </Label>
+                                    </content>
+                                    <HBox.margin>
+                                        <Insets top="11.0"/>
+                                    </HBox.margin>
+                                </ScrollPane>
+                            </children>
+                        </HBox>
+                        <HBox fx:id="lengthPane" alignment="CENTER" visible="false">
+                            <children>
+                                <Label text="Длинна числа: " textFill="#555555">
+                                    <font>
+                                        <Font name="Arial Black" size="16.0"/>
+                                    </font>
+                                </Label>
+                                <Label fx:id="lengthLbl" textFill="#555555">
+                                    <font>
+                                        <Font name="Arial Black" size="16.0"/>
+                                    </font>
+                                </Label>
+                            </children>
+                            <VBox.margin>
+                                <Insets bottom="10.0"/>
+                            </VBox.margin>
+                        </HBox>
+                    </children>
+                </VBox>
+                <VBox fx:id="secondMethodPane" alignment="CENTER" fillWidth="false" visible="false">
+                    <children>
+                        <TextField fx:id="nFld" prefHeight="40.0" prefWidth="379.0" promptText="Любое число"
+                                   style="-fx-background-color: #eeeeee; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #999999; -fx-text-fill: #555555;">
+                            <font>
+                                <Font name="Arial Black" size="18.0"/>
+                            </font>
+                        </TextField>
+                        <HBox alignment="CENTER">
+                            <children>
+                                <Label text="Длинна числа: " textFill="#555555">
+                                    <font>
+                                        <Font name="Arial Black" size="16.0"/>
+                                    </font>
+                                    <HBox.margin>
+                                        <Insets/>
+                                    </HBox.margin>
+                                </Label>
+                                <Label fx:id="lengthLbl3" text="0" textFill="#666666">
+                                    <font>
+                                        <Font name="Arial Black" size="16.0"/>
+                                    </font>
+                                </Label>
+                            </children>
+                            <VBox.margin>
+                                <Insets top="10.0"/>
+                            </VBox.margin>
+                        </HBox>
+                    </children>
+                </VBox>
+                <FlowPane fx:id="selectionPane" alignment="CENTER" columnHalignment="CENTER">
+                    <children>
+                        <Button fx:id="firstMethodBtn" mnemonicParsing="false" prefHeight="90.0" prefWidth="195.0"
+                                style="-fx-background-color: #cecece; -fx-background-radius: 10;"
+                                text="Тест Люка - Лемера&#10;(числа Мерсенна)&#10;" textAlignment="CENTER"
+                                textFill="#555555">
+                            <FlowPane.margin>
+                                <Insets right="10.0" top="15.0"/>
+                            </FlowPane.margin>
+                            <font>
+                                <Font name="Arial Black" size="15.0"/>
+                            </font>
+                        </Button>
+                        <Button fx:id="secondMethodBtn" mnemonicParsing="false" prefHeight="90.0" prefWidth="195.0"
+                                style="-fx-background-color: #cecece; -fx-background-radius: 10;"
+                                text="Тест&#10;Аткина-Морейна&#10;(ЕСРР)" textAlignment="CENTER" textFill="#555555">
+                            <font>
+                                <Font name="Arial Black" size="15.0"/>
+                            </font>
+                            <FlowPane.margin>
+                                <Insets top="15.0"/>
+                            </FlowPane.margin>
+                        </Button>
+                    </children>
+                </FlowPane>
+            </children>
+        </StackPane>
+    </center>
+    <bottom>
+        <BorderPane fx:id="bottomPanel" visible="false" BorderPane.alignment="CENTER">
+            <right>
+                <Button fx:id="testBtn" defaultButton="true" disable="true" mnemonicParsing="false" prefHeight="30.0"
+                        prefWidth="120.0" style="-fx-background-color: #00ff77; -fx-background-radius: 15 0;"
+                        text="Тестировать" textFill="WHITE" BorderPane.alignment="CENTER">
+                    <font>
+                        <Font name="Arial Black" size="13.0"/>
+                    </font>
+                    <BorderPane.margin>
+                        <Insets bottom="5.0" right="5.0"/>
+                    </BorderPane.margin>
+                </Button>
+            </right>
+            <left>
+                <Button fx:id="backBtn" cancelButton="true" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0"
+                        style="-fx-background-color: #ababab; -fx-background-radius: 0 15;" text="Назад"
+                        textFill="WHITE" BorderPane.alignment="CENTER">
+                    <font>
+                        <Font name="Arial Black" size="13.0"/>
+                    </font>
+                    <BorderPane.margin>
+                        <Insets bottom="5.0" left="5.0"/>
+                    </BorderPane.margin>
+                </Button>
+            </left>
+        </BorderPane>
+    </bottom>
+</BorderPane>
