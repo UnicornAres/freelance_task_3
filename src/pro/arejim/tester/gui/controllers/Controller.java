@@ -1,6 +1,10 @@
 package pro.arejim.tester.gui.controllers;
 
 import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ObservableIntegerValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -82,6 +86,7 @@ public class Controller implements Initializable {
     private volatile BigInteger p;
     // Таймер для подсчёта времени в миллисекундах
     private Timer timer;
+    private volatile DoubleProperty percents = new SimpleDoubleProperty(0);
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -204,9 +209,11 @@ public class Controller implements Initializable {
                 backBtn.setText("Прервать");            // Заменить текст на кнопке "Назад" на "Прервать"
                 progressIndicator.setVisible(true);     // Отображение индикатора загрузки
                 // Создание фонового потока для тестирования числа на простоту
+                progressIndicator.setProgress(0);
+                progressIndicator.progressProperty().bind(percents);
                 thread = new Thread(() -> {
                     startTimer();                       // Запуск таймера
-                    if (Utils.testM(p, new BigInteger(numberLbl.getText())))  // Проверка числа на простоту
+                    if (Utils.testM(p, new BigInteger(numberLbl.getText()), percents))  // Проверка числа на простоту
                         Platform.runLater(() -> statusLbl.setText("Число простое"));
                     else Platform.runLater(() -> statusLbl.setText("Число составное"));
                     Platform.runLater(() -> {           // Особенности JavaFX
@@ -301,6 +308,10 @@ public class Controller implements Initializable {
                 if (thread.isAlive()) {                 // Если поток запущен
                     Platform.runLater(() -> elapsedTimeLbl.setText(elapsedTime + " мс."));  // Обновление строки
                 } else {
+                    Platform.runLater(() -> {
+                        progressIndicator.progressProperty().unbind();
+                        progressIndicator.progressProperty().setValue(-1);
+                    });
                     timer.cancel();                     // остановка таймера
                 }
             }
