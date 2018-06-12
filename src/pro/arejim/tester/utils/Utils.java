@@ -28,7 +28,7 @@ public class Utils {
      * @return - true, если число простое. Иначе false.
      */
     public static boolean testA(BigInteger N) {
-        return N.isProbablePrime(128);      // Проверка числа встроеными методами JAVA
+        return new Primes().isPrime(N.toString());      // Проверка числа встроеными методами JAVA
     }
 
     /**
