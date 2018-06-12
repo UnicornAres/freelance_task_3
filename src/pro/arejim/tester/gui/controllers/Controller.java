@@ -210,6 +210,7 @@ public class Controller implements Initializable {
                 progressIndicator.setVisible(true);     // Отображение индикатора загрузки
                 // Создание фонового потока для тестирования числа на простоту
                 progressIndicator.setProgress(0);
+                percents.set(0);
                 progressIndicator.progressProperty().bind(percents);
                 thread = new Thread(() -> {
                     startTimer();                       // Запуск таймера

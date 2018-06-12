@@ -28,7 +28,7 @@ public class Utils {
      * @return - true, если число простое. Иначе false.
      */
     public static boolean testA(BigInteger N) {
-        return new Primes().isPrime(N.toString());      // Проверка числа встроеными методами JAVA
+        return new Primes().isPrime(N);      // Проверка числа метоом Аткина-Морейна
     }
 
     /**
@@ -50,7 +50,7 @@ public class Utils {
                 double finalOldPercents = oldPercents;
                 Platform.runLater(() -> progress.setValue(finalOldPercents));
             }
-            S = S.pow(2).subtract(new BigInteger("2")).divideAndRemainder(number)[1];    // (S^2 - 2) % M
+            S = S.pow(2).subtract(new BigInteger("2")).remainder(number);    // (S^2 - 2) % M
         }
         return S.equals(BigInteger.ZERO);   // Возвращает true, если S == 0
     }

@@ -3,43 +3,51 @@ package pro.arejim.tester.utils;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Scanner;
 
 public class Primes {
 
+    // Все возможные дискриминанты уравнения a^2+|D|*b^2=4N
     private final int[] DISCRIMINANTS = {-3, -4, -7, -8, -11, -12, -16, -19, -27, -28, -43, -67, -163};
+    // Проверяемое число
     private BigInteger N;
 
-    public BigInteger getN() {
-        return N;
-    }
-
-    public void setN(BigInteger N) {
-        this.N = N;
+    private static BigInteger mod(BigInteger a, BigInteger b, BigInteger p) {
+        BigInteger r = BigInteger.ONE;
+        while (b.compareTo(BigInteger.ZERO) > 0) {
+            if (b.and(BigInteger.ONE).equals(BigInteger.ONE))
+                r = r.multiply(a).remainder(p);
+            b = b.shiftRight(1);
+            a = a.multiply(a).remainder(p);
+        }
+        return r;
     }
 
     // Алгоритм Лежандра, необходим для проверки всех дискриминантов, и вовода подходящих для N
-    // Возращает -1, 0, 1
-    private int calculateLegendre(BigInteger D, BigInteger N) {
-        if (D.compareTo(N) == 0 || D.compareTo(N) == 1 || D.compareTo(BigInteger.ZERO) == -1) {
+    // Пусть D - целое число, и N - простое число, не равное 2
+    // Символ Лежандра (D/N) определяется следующим образом:
+    //   (D/N) = 0, если D/P
+    //   (D/N) = 1, если существует целое x^2=D(mod N)
+    //   (D/N) = -1, условие противоположное (D/N) = 1
+    private int calculateLegendre(BigInteger D, BigInteger N) { // Возращает -1, 0, 1
+        if (D.equals(N) || D.compareTo(N) > 0 || D.compareTo(BigInteger.ZERO) < 0) {
             return calculateLegendre(D.remainder(N), N);
-        } else if (D.compareTo(BigInteger.ZERO) == 0 || D.compareTo(BigInteger.ONE) == 0) {
-            return Integer.parseInt(D.toString());
-        } else if (D.compareTo(BigInteger.valueOf(2)) == 0) {
-            if (N.remainder(BigInteger.valueOf(8)).compareTo(BigInteger.ONE) == 0 ||
-                    N.remainder(BigInteger.valueOf(8)).compareTo(BigInteger.valueOf(7)) == 0) {
+        } else if (D.intValue() == 0 || D.intValue() == 1) {
+            return D.intValue();
+        } else if (D.intValue() == 2) {
+            if (N.remainder(BigInteger.valueOf(8)).equals(BigInteger.ONE) ||
+                    N.remainder(BigInteger.valueOf(8)).equals(BigInteger.valueOf(7))) {
                 return 1;
             } else {
                 return -1;
             }
-        } else if (D.compareTo(N.subtract(BigInteger.ONE)) == 0) {
-            if (N.remainder(BigInteger.valueOf(4)).compareTo(BigInteger.ONE) == 0) {
+        } else if (D.equals(N.subtract(BigInteger.ONE))) {
+            if (N.remainder(BigInteger.valueOf(4)).equals(BigInteger.ZERO)) {
                 return 1;
             } else {
                 return -1;
             }
         }
-        if (!prime(D)) {
+        if (!prime(D)) { // Является ли D простым в общем случае
             ArrayList<BigInteger> factors = factorize(D);
             int count = 1;
             for (BigInteger factor : factors) {
@@ -47,15 +55,14 @@ public class Primes {
             }
             return count;
         } else {
-            if (N.subtract(BigInteger.ONE).divide(BigInteger.valueOf(2)).remainder(BigInteger.valueOf(2)).compareTo(BigInteger.ZERO) == 0 ||
-                    D.subtract(BigInteger.ONE).divide(BigInteger.valueOf(2)).remainder(BigInteger.valueOf(2)).compareTo(BigInteger.ZERO) == 0) {
+            if (N.subtract(BigInteger.ONE).divide(BigInteger.valueOf(2)).remainder(BigInteger.valueOf(2)).equals(BigInteger.ZERO) ||
+                    D.subtract(BigInteger.ONE).divide(BigInteger.valueOf(2)).remainder(BigInteger.valueOf(2)).equals(BigInteger.ZERO)) {
                 return calculateLegendre(N, D);
             } else {
                 return (-1) * calculateLegendre(N, D);
             }
         }
     }
-
 
     // Возращает все подходящие дискриминанты для N
     private ArrayList<Integer> checkDiscriminants() {
@@ -72,16 +79,17 @@ public class Primes {
         if (checkDiscriminants().isEmpty()) {
             return false;
         }
+        // Проверяем каждый дискримант на нахождение корней a и b ( a^2+|D|*b^2=4N )
         for (int i : checkDiscriminants()) {
             BigInteger d = new BigInteger(String.valueOf(i)).negate();
             BigInteger m = N;
             BigInteger r = sqrt(m.subtract(d), m);
 
-            if (N.compareTo(BigInteger.valueOf(3)) == 0) {
+            if (N.equals(BigInteger.valueOf(2)) || N.equals(BigInteger.valueOf(3))) {
                 return true;
             }
-            if (r.compareTo(BigInteger.ZERO) != 0) {
-                if (((r.multiply(r)).mod(m)).compareTo(m.subtract(d)) == 0) {
+            if (r.intValue() == 0) {
+                if (((r.multiply(r)).mod(m)).equals(m.subtract(d))) {
                     BigInteger f = m;
                     BigInteger x = r;
 
@@ -92,29 +100,27 @@ public class Primes {
                     }
                     BigInteger z = (m.subtract(x.multiply(x))).divide(d);
                     BigInteger y = sqrt(z);
-                    if ((y.multiply(y).compareTo(z) == 0)) {
+                    if (y.multiply(y).equals(z)) {
                         return true;
                     }
                 }
-            } else {
-                return calculateGoldwaser();
+            }
+            // В противном случае, запускаем алгоритм Шуфа на дополнительную проверку
+            else {
+                return calculateGoldwasser();
             }
         }
         return false;
     }
 
-    private boolean calculateGoldwaser() {
-        if (N.compareTo(BigInteger.ZERO) == 0 || N.compareTo(BigInteger.ONE) == 0) {
-            return false;
-        }
-        if (N.compareTo(BigInteger.valueOf(2)) == 0) {
-            return true;
-        }
-        if (N.remainder(BigInteger.valueOf(2)).compareTo(BigInteger.ZERO) == 0) {
+    private boolean calculateGoldwasser() {
+        if (N.equals(BigInteger.ZERO) || N.equals(BigInteger.ONE) || // Если равно 0, 1, 2 или парное число
+                N.equals(BigInteger.valueOf(2)) ||
+                N.remainder(BigInteger.valueOf(2)).equals(BigInteger.ZERO)) {
             return false;
         }
         BigInteger s = N.subtract(BigInteger.ONE);
-        while (s.remainder(BigInteger.valueOf(2)).compareTo(BigInteger.ZERO) == 0) {
+        while (s.remainder(BigInteger.valueOf(2)).equals(BigInteger.ZERO)) {
             s = s.divide(BigInteger.valueOf(2));
         }
         Random rand = new Random();
@@ -125,37 +131,28 @@ public class Primes {
             BigInteger a = u.remainder(N.subtract(BigInteger.ONE)).add(BigInteger.ONE);
             BigInteger exp = s;
             BigInteger mod = mod(a, exp, N);
-            while (exp.compareTo(N.subtract(BigInteger.ONE)) != 0 && mod.compareTo(BigInteger.ONE) != 0 && mod.compareTo(N.subtract(BigInteger.ONE)) != 0) {
+            while (!exp.equals(N.subtract(BigInteger.ONE)) && !mod.equals(BigInteger.ONE) && !mod.equals(N.subtract(BigInteger.ONE))) {
                 mod = mod.multiply(mod).mod(N);
                 exp = exp.multiply(BigInteger.valueOf(2));
             }
-            if (mod.compareTo(N.subtract(BigInteger.ONE)) != 0 && exp.remainder(BigInteger.valueOf(2)).compareTo(BigInteger.ZERO) == 0) {
+            if (mod.compareTo(N.subtract(BigInteger.ONE)) != 0 && exp.remainder(BigInteger.valueOf(2)).equals(BigInteger.ZERO)) {
                 return false;
             }
         }
         return true;
     }
 
+    // Провеяет, является ли число D простым
     private boolean prime(BigInteger D) {
-        for (int i = 2; D.compareTo(BigInteger.valueOf(i)) == 1; i++) {
-            if (D.remainder(BigInteger.valueOf(i)).compareTo(BigInteger.ZERO) == 0) {
+        for (int i = 2; D.compareTo(BigInteger.valueOf(i)) > 0; i++) {
+            if (D.remainder(BigInteger.valueOf(i)).equals(BigInteger.ZERO)) {
                 return false;
             }
         }
         return true;
     }
 
-    private static BigInteger mod(BigInteger a, BigInteger b, BigInteger p) {
-        BigInteger r = BigInteger.ONE;
-        while (b.compareTo(BigInteger.ZERO) == 1) {
-            if ((b.and(BigInteger.ONE).compareTo(BigInteger.ONE)) == 0)
-                r = r.multiply(a).remainder(p);
-            b = b.shiftRight(1);
-            a = a.multiply(a).remainder(p);
-        }
-        return r;
-    }
-
+    // Вычисление корня
     private BigInteger sqrt(BigInteger X) {
         BigInteger P;
         BigInteger mul = BigInteger.valueOf(2);
@@ -172,22 +169,25 @@ public class Primes {
         return P;
     }
 
+    // Вычисление корня D по N
+    // Если это не возможно, возращает 0
     private BigInteger sqrt(BigInteger D, BigInteger N) {
         BigInteger x;
         D = D.remainder(N);
-        if ((D.modPow(N.subtract(BigInteger.ONE), N)).compareTo(BigInteger.ONE) != 0) {
+        // D^N-1) mod N > 0 или D^(N-1) mod N > 0
+        if (!(D.modPow(N.subtract(BigInteger.ONE), N)).equals(BigInteger.ONE)) {
             return BigInteger.ZERO;
         }
-        if ((D.modPow(N.subtract(BigInteger.ONE), N)).compareTo(BigInteger.ONE) == 0) {
-            if ((D.modPow((N.subtract(BigInteger.ONE)).divide(BigInteger.valueOf(2)), N).compareTo(N.subtract(BigInteger.ONE)) == 0)) {
+        if ((D.modPow(N.subtract(BigInteger.ONE), N)).equals(BigInteger.ONE)) {
+            if ((D.modPow((N.subtract(BigInteger.ONE)).divide(BigInteger.valueOf(2)), N).equals(N.subtract(BigInteger.ONE)))) {
                 return BigInteger.ZERO;
             }
-            if ((D.modPow((N.subtract(BigInteger.ONE)).divide(BigInteger.valueOf(2)), N)).compareTo(BigInteger.ONE) == 0) {
-                if ((N.remainder(BigInteger.valueOf(4))).compareTo(BigInteger.valueOf(3)) == 0) {
+            if ((D.modPow((N.subtract(BigInteger.ONE)).divide(BigInteger.valueOf(2)), N)).equals(BigInteger.ONE)) {
+                if ((N.remainder(BigInteger.valueOf(4))).equals(BigInteger.valueOf(3))) {
                     x = D.modPow((N.add(BigInteger.ONE)).divide(BigInteger.valueOf(4)), N);
                     return x;
                 }
-                if ((N.remainder(BigInteger.valueOf(8))).compareTo(BigInteger.valueOf(5)) == 0) {
+                if ((N.remainder(BigInteger.valueOf(8))).equals(BigInteger.valueOf(5))) {
                     x = D.modPow((N.add(BigInteger.valueOf(3))).divide(BigInteger.valueOf(8)), N);
                     BigInteger c = (x.multiply(x)).remainder(N);
                     if (((c.remainder(N)).compareTo(N.subtract(D))) == 0) {
@@ -195,13 +195,13 @@ public class Primes {
                     }
                     return x;
                 }
-                if ((N.remainder(BigInteger.valueOf(8))).compareTo(BigInteger.valueOf(1)) == 0) {
+                if ((N.remainder(BigInteger.valueOf(8))).equals(BigInteger.ONE)) {
                     BigInteger d = BigInteger.valueOf(2);
                     BigInteger t = N.subtract(BigInteger.ONE);
                     int s = 0;
                     int i;
                     BigInteger m;
-                    while ((t.remainder(BigInteger.valueOf(2))).compareTo(BigInteger.ZERO) == 0) {
+                    while ((t.remainder(BigInteger.valueOf(2))).equals(BigInteger.ZERO)) {
                         s++;
                         t = t.divide(BigInteger.valueOf(2));
                     }
@@ -221,31 +221,31 @@ public class Primes {
         return BigInteger.ZERO;
     }
 
+    // Декомпозиция D, приведение D к простым множителям
     private ArrayList<BigInteger> factorize(BigInteger D) {
         ArrayList<BigInteger> factors = new ArrayList<>();
         int P = 2;
         while (true) {
-            while (D.remainder(BigInteger.valueOf(P)).compareTo(BigInteger.ZERO) == 0 && D.compareTo(BigInteger.ZERO) == 1) {
+            while (D.remainder(BigInteger.valueOf(P)).equals(BigInteger.ZERO) && D.compareTo(BigInteger.ZERO) > 0) {
                 factors.add(BigInteger.valueOf(P));
                 D = D.divide(BigInteger.valueOf(P));
             }
             P += 1;
-            if (D.divide(BigInteger.valueOf(P)).compareTo(BigInteger.valueOf(P)) == -1) {
+            if (D.divide(BigInteger.valueOf(P)).compareTo(BigInteger.valueOf(P)) < 0) {
                 break;
             }
         }
-        if (D.compareTo(BigInteger.valueOf(1)) == 1) {
+        if (D.compareTo(BigInteger.valueOf(1)) > 0) {
             factors.add(D);
         }
         return factors;
     }
 
-    public boolean isPrime(String number) {
-        try {
-            setN(new BigInteger(number));
-        } catch (NumberFormatException e) {
-            System.exit(-1);
-        }
+    // Основной метод
+    // На вход подается строка (проверял до 500 символов)
+    // Вывод: True - число простое, False - составное
+    public boolean isPrime(BigInteger number) {
+        this.N = number;
         return calculateCornacchia();
     }
 }
