@@ -1,5 +1,5 @@
 # freelance_task_3
-Number Simplicity Tester
+Number Primality Tester
 
 Приложение для тестирования чисел на простоту.
 
